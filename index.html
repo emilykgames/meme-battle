@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Meme Battle</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #ff4ecd, #7c3aed, #2563eb);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(15, 15, 30, 0.94);
+            border: 4px solid white;
+            border-radius: 30px;
+            padding: 35px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 52px;
+            font-weight: 900;
+            margin-bottom: 5px;
+            transform: rotate(-2deg);
+            text-shadow: 5px 5px 0 #ff4ecd;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 35px;
+            color: #ddd;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 32px;
+        }
+
+        input {
+            width: 100%;
+            padding: 18px;
+            border-radius: 15px;
+            border: 3px solid #555;
+            background: #222;
+            color: white;
+            font-size: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        button {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 15px;
+            font-size: 20px;
+            font-weight: 900;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: transform 0.15s;
+        }
+
+        button:hover {
+            transform: scale(1.03) rotate(-1deg);
+        }
+
+        .primary {
+            background: #ff4ecd;
+            color: white;
+        }
+
+        .secondary {
+            background: #7c3aed;
+            color: white;
+        }
+
+        .green {
+            background: #22c55e;
+            color: white;
+        }
+
+        .room-code {
+            font-size: 60px;
+            font-weight: 900;
+            letter-spacing: 10px;
+            text-align: center;
+            color: #ffeb3b;
+            margin: 25px 0;
+        }
+
+        .players {
+            background: #222;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .player {
+            background: #333;
+            border-radius: 12px;
+            padding: 12px;
+            margin: 8px 0;
+            font-size: 18px;
+        }
+
+        .timer {
+            text-align: center;
+            font-size: 70px;
+            font-weight: 900;
+            color: #ffeb3b;
+            margin: 15px;
+        }
+
+        .meme {
+            width: 100%;
+            max-height: 450px;
+            object-fit: contain;
+            background: white;
+            border-radius: 20px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .caption {
+            font-size: 24px;
+        }
+
+        .note {
+            text-align: center;
+            color: #aaa;
+            margin-top: 15px;
+        }
+
+        .emoji {
+            font-size: 40px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="game">
+
+    <div class="logo">
+        😂 MEME BATTLE 😂
+    </div>
+
+    <div class="subtitle">
+        Make memes. Destroy friendships. Win glory.
+    </div>
+
+
+    <!-- HOME -->
+    <div id="home" class="screen active">
+
+        <h2>🔥 Ready to Battle?</h2>
+
+        <button class="primary" onclick="showScreen('create')">
+            🎮 CREATE GAME
+        </button>
+
+        <button class="secondary" onclick="showScreen('join')">
+            🚪 JOIN GAME
+        </button>
+
+    </div>
+
+
+    <!-- CREATE GAME -->
+    <div id="create" class="screen">
+
+        <h2>🎮 Create Your Game</h2>
+
+        <input
+            id="hostName"
+            type="text"
+            placeholder="Your nickname"
+            maxlength="15"
+        >
+
+        <button class="primary" onclick="createGame()">
+            CREATE ROOM 🚀
+        </button>
+
+        <button class="secondary" onclick="showScreen('home')">
+            ← BACK
+        </button>
+
+    </div>
+
+
+    <!-- JOIN GAME -->
+    <div id="join" class="screen">
+
+        <h2>🚪 Join A Game</h2>
+
+        <input
+            id="playerName"
+            type="text"
+            placeholder="Your nickname"
+            maxlength="15"
+        >
+
+        <input
+            id="roomInput"
+            type="text"
+            placeholder="4-character room code"
+            maxlength="4"
+        >
+
+        <button class="primary" onclick="joinGame()">
+            JOIN BATTLE 🔥
+        </button>
+
+        <button class="secondary" onclick="showScreen('home')">
+            ← BACK
+        </button>
+
+    </div>
+
+
+    <!-- LOBBY -->
+    <div id="lobby" class="screen">
+
+        <h2>🔥 GAME LOBBY</h2>
+
+        <div>
+            Room Code:
+        </div>
+
+        <div class="room-code" id="roomCode">
+            ----
+        </div>
+
+        <div class="note">
+            Give this code to your friends!
+        </div>
+
+        <div class="players">
+
+            <h3>Players</h3>
+
+            <div class="player">
+                🟢 You
+            </div>
+
+            <div class="player">
+                🟡 Waiting for friends...
+            </div>
+
+        </div>
+
+        <button class="green" onclick="startGame()">
+            START GAME 🚀
+        </button>
+
+        <div class="note">
+            Multiplayer coming next!
+        </div>
+
+    </div>
+
+
+    <!-- MEME CREATION -->
+    <div id="meme" class="screen">
+
+        <h2>🔥 MAKE YOUR MEME</h2>
+
+        <div class="timer" id="timer">
+            60
+        </div>
+
+        <img
+            id="memeImage"
+            class="meme"
+            src="https://i.imgflip.com/30b1gx.jpg"
+            alt="Meme template"
+        >
+
+        <input
+            id="caption"
+            class="caption"
+            type="text"
+            placeholder="WRITE SOMETHING FUNNY..."
+            maxlength="100"
+        >
+
+        <button class="primary" onclick="submitMeme()">
+            SUBMIT MEME 💀
+        </button>
+
+        <div class="note">
+            You have ONE job. Make it funny.
+        </div>
+
+    </div>
+
+
+    <!-- SUBMITTED -->
+    <div id="submitted" class="screen">
+
+        <div style="text-align:center">
+
+            <div class="emoji">
+                🫡
+            </div>
+
+            <h2>MEME SUBMITTED!</h2>
+
+            <p>
+                Now sit back and judge everyone else's terrible sense of humor.
+            </p>
+
+            <button class="primary" onclick="showScreen('battle')">
+                SEE THE BATTLE 🔥
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- BATTLE -->
+    <div id="battle" class="screen">
+
+        <h2>⚔️ MEME BATTLE</h2>
+
+        <p style="text-align:center">
+            Which meme is better?
+        </p>
+
+        <img
+            id="battleImage"
+            class="meme"
+            src="https://i.imgflip.com/30b1gx.jpg"
+            alt="Battle meme"
+        >
+
+        <button class="primary" onclick="vote('A')">
+            😂 MEME A
+        </button>
+
+        <button class="secondary" onclick="vote('B')">
+            💀 MEME B
+        </button>
+
+    </div>
+
+
+    <!-- WINNER -->
+    <div id="winner" class="screen">
+
+        <div style="text-align:center">
+
+            <div class="emoji">
+                🏆
+            </div>
+
+            <h2>CHAMPION MEME!</h2>
+
+            <img
+                class="meme"
+                src="https://i.imgflip.com/30b1gx.jpg"
+                alt="Winning meme"
+            >
+
+            <h2>👑 YOU WON!</h2>
+
+            <button class="primary" onclick="location.reload()">
+                PLAY AGAIN 🔥
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    let timer;
+    let timeLeft = 60;
+
+
+    function showScreen(screenId) {
+
+        document.querySelectorAll('.screen').forEach(screen => {
+            screen.classList.remove('active');
+        });
+
+        document.getElementById(screenId).classList.add('active');
+
+    }
+
+
+    function generateRoomCode() {
+
+        const characters =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+        let code = "";
+
+        for (let i = 0; i < 4; i++) {
+
+            code += characters.charAt(
+                Math.floor(Math.random() * characters.length)
+            );
+
+        }
+
+        return code;
+
+    }
+
+
+    function createGame() {
+
+        const name =
+            document.getElementById("hostName").value.trim();
+
+        if (!name) {
+
+            alert("Enter your nickname first!");
+
+            return;
+        }
+
+        const code = generateRoomCode();
+
+        document.getElementById("roomCode").textContent = code;
+
+        showScreen("lobby");
+
+    }
+
+
+    function joinGame() {
+
+        const name =
+            document.getElementById("playerName").value.trim();
+
+        const code =
+            document.getElementById("roomInput").value.trim().toUpperCase();
+
+        if (!name) {
+
+            alert("Enter your nickname!");
+
+            return;
+        }
+
+        if (code.length !== 4) {
+
+            alert("Room codes are 4 characters!");
+
+            return;
+        }
+
+        document.getElementById("roomCode").textContent = code;
+
+        showScreen("lobby");
+
+    }
+
+
+    function startGame() {
+
+        showScreen("meme");
+
+        startTimer();
+
+    }
+
+
+    function startTimer() {
+
+        timeLeft = 60;
+
+        document.getElementById("timer").textContent =
+            timeLeft;
+
+        clearInterval(timer);
+
+        timer = setInterval(() => {
+
+            timeLeft--;
+
+            document.getElementById("timer").textContent =
+                timeLeft;
+
+            if (timeLeft <= 0) {
+
+                clearInterval(timer);
+
+                submitMeme();
+
+            }
+
+        }, 1000);
+
+    }
+
+
+    function submitMeme() {
+
+        clearInterval(timer);
+
+        showScreen("submitted");
+
+    }
+
+
+    function vote(choice) {
+
+        showScreen("winner");
+
+    }
+
+</script>
+
+</body>
+</html>
