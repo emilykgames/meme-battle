@@ -1,514 +1,782 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Meme Battle</title>
+<title>Meme Battle</title>
 
-    <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <style>
+<style>
 
-        * {
-            box-sizing: border-box;
-        }
+* {
+    box-sizing: border-box;
+}
 
-        body {
-            margin: 0;
-            min-height: 100vh;
+body {
 
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
+    margin: 0;
 
-            background:
-                linear-gradient(
-                    135deg,
-                    #ff4ecd,
-                    #7c3aed,
-                    #2563eb
-                );
+    min-height: 100vh;
 
-            color: white;
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 
-            display: flex;
-            justify-content: center;
-            align-items: center;
+    background:
+        linear-gradient(
+            135deg,
+            #ff4ecd,
+            #7c3aed,
+            #2563eb
+        );
 
-            padding: 20px;
-        }
+    color: white;
 
-        .game {
+    display: flex;
 
-            width: 100%;
-            max-width: 900px;
+    justify-content: center;
 
-            background:
-                rgba(15, 15, 30, 0.96);
+    align-items: center;
 
-            border:
-                4px solid white;
+    padding: 20px;
+}
 
-            border-radius: 30px;
+.game {
 
-            padding: 35px;
+    width: 100%;
 
-            box-shadow:
-                0 20px 60px rgba(0,0,0,0.4);
-        }
+    max-width: 900px;
 
-        .logo {
+    background:
+        rgba(15, 15, 30, 0.96);
 
-            text-align: center;
+    border:
+        4px solid white;
 
-            font-size: 52px;
+    border-radius: 30px;
 
-            font-weight: 900;
+    padding: 35px;
 
-            margin-bottom: 5px;
+    box-shadow:
+        0 20px 60px rgba(0,0,0,0.4);
+}
 
-            transform:
-                rotate(-2deg);
+.logo {
 
-            text-shadow:
-                5px 5px 0 #ff4ecd;
-        }
+    text-align: center;
 
-        .subtitle {
+    font-size: 52px;
 
-            text-align: center;
+    font-weight: 900;
 
-            font-size: 18px;
+    margin-bottom: 5px;
 
-            margin-bottom: 35px;
+    transform: rotate(-2deg);
 
-            color: #ddd;
-        }
+    text-shadow:
+        5px 5px 0 #ff4ecd;
+}
 
-        .screen {
-            display: none;
-        }
+.subtitle {
 
-        .screen.active {
-            display: block;
-        }
+    text-align: center;
 
-        h2 {
+    font-size: 18px;
 
-            text-align: center;
+    margin-bottom: 35px;
 
-            font-size: 32px;
-        }
+    color: #ddd;
+}
 
-        input {
+.screen {
+    display: none;
+}
 
-            width: 100%;
+.screen.active {
+    display: block;
+}
 
-            padding: 18px;
+h2 {
 
-            border-radius: 15px;
+    text-align: center;
 
-            border:
-                3px solid #555;
+    font-size: 32px;
+}
 
-            background: #222;
+button {
 
-            color: white;
+    width: 100%;
 
-            font-size: 20px;
+    padding: 18px;
 
-            margin-bottom: 15px;
+    border: none;
 
-            text-align: center;
-        }
+    border-radius: 15px;
 
-        button {
+    font-size: 20px;
 
-            width: 100%;
+    font-weight: 900;
 
-            padding: 18px;
+    cursor: pointer;
 
-            border: none;
+    margin-top: 10px;
 
-            border-radius: 15px;
+    transition:
+        transform 0.15s;
+}
 
-            font-size: 20px;
+button:hover {
 
-            font-weight: 900;
+    transform:
+        scale(1.03)
+        rotate(-1deg);
+}
 
-            cursor: pointer;
+.primary {
 
-            margin-top: 10px;
+    background: #ff4ecd;
 
-            transition:
-                transform 0.15s;
-        }
+    color: white;
+}
 
-        button:hover {
+.secondary {
 
-            transform:
-                scale(1.03)
-                rotate(-1deg);
-        }
+    background: #7c3aed;
 
-        .primary {
+    color: white;
+}
 
-            background: #ff4ecd;
+.green {
 
-            color: white;
-        }
+    background: #22c55e;
 
-        .secondary {
+    color: white;
+}
 
-            background: #7c3aed;
+.yellow {
 
-            color: white;
-        }
+    background: #facc15;
 
-        .green {
+    color: black;
+}
 
-            background: #22c55e;
+input {
 
-            color: white;
-        }
+    width: 100%;
 
-        .room-code {
+    padding: 18px;
 
-            font-size: 60px;
+    border-radius: 15px;
 
-            font-weight: 900;
+    border:
+        3px solid #555;
 
-            letter-spacing: 10px;
+    background: #222;
 
-            text-align: center;
+    color: white;
 
-            color: #ffeb3b;
+    font-size: 20px;
 
-            margin: 25px 0;
-        }
+    margin-bottom: 15px;
 
-        .players {
+    text-align: center;
+}
 
-            background: #222;
+.room-code {
 
-            border-radius: 20px;
+    font-size: 60px;
 
-            padding: 20px;
+    font-weight: 900;
 
-            margin: 20px 0;
-        }
+    letter-spacing: 10px;
 
-        .player {
+    text-align: center;
 
-            background: #333;
+    color: #ffeb3b;
 
-            border-radius: 12px;
+    margin: 25px 0;
+}
 
-            padding: 12px;
+.players {
 
-            margin: 8px 0;
+    background: #222;
 
-            font-size: 18px;
-        }
+    border-radius: 20px;
 
-        .player-count {
+    padding: 20px;
 
-            text-align: center;
+    margin: 20px 0;
+}
 
-            color: #aaa;
+.player {
 
-            margin-top: 15px;
-        }
+    background: #333;
 
-        .error {
+    border-radius: 12px;
 
-            background: #7f1d1d;
+    padding: 12px;
 
-            border:
-                2px solid #ef4444;
+    margin: 8px 0;
 
-            padding: 15px;
+    font-size: 18px;
+}
 
-            border-radius: 12px;
+.player-count {
 
-            margin-top: 15px;
+    text-align: center;
 
-            display: none;
+    color: #aaa;
 
-            text-align: center;
-        }
+    margin-top: 15px;
+}
 
-        .success {
+.error {
 
-            background: #14532d;
+    background: #7f1d1d;
 
-            border:
-                2px solid #22c55e;
+    border:
+        2px solid #ef4444;
 
-            padding: 15px;
+    padding: 15px;
 
-            border-radius: 12px;
+    border-radius: 12px;
 
-            margin-top: 15px;
+    margin-top: 15px;
 
-            display: none;
+    display: none;
 
-            text-align: center;
-        }
+    text-align: center;
+}
 
-        .note {
+.note {
 
-            text-align: center;
+    text-align: center;
 
-            color: #aaa;
+    color: #aaa;
 
-            margin-top: 15px;
-        }
+    margin-top: 15px;
+}
 
-    </style>
+
+/* =========================
+   GAME
+========================= */
+
+.game-info {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    background: #222;
+
+    padding: 15px;
+
+    border-radius: 15px;
+
+    margin-bottom: 20px;
+
+    font-size: 20px;
+
+    font-weight: bold;
+}
+
+.timer {
+
+    color: #ffeb3b;
+
+    font-size: 28px;
+}
+
+
+/* =========================
+   MEME EDITOR
+========================= */
+
+.meme-editor {
+
+    position: relative;
+
+    width: 100%;
+
+    max-width: 700px;
+
+    margin: 0 auto 25px;
+
+    overflow: hidden;
+
+    border-radius: 15px;
+
+    background: black;
+}
+
+.meme-editor img {
+
+    display: block;
+
+    width: 100%;
+
+    height: auto;
+}
+
+.caption-preview {
+
+    position: absolute;
+
+    top: 8%;
+
+    left: 5%;
+
+    width: 90%;
+
+    text-align: center;
+
+    color: white;
+
+    font-family:
+        Impact,
+        Arial Black,
+        sans-serif;
+
+    font-size: clamp(
+        25px,
+        5vw,
+        60px
+    );
+
+    font-weight: 900;
+
+    text-transform: uppercase;
+
+    line-height: 1.05;
+
+    -webkit-text-stroke:
+        2px black;
+
+    text-shadow:
+        3px 3px 0 black,
+        -3px -3px 0 black,
+        3px -3px 0 black,
+        -3px 3px 0 black;
+
+    word-wrap: break-word;
+
+    pointer-events: none;
+}
+
+#captionInput {
+
+    font-size: 22px;
+
+    text-align: left;
+}
+
+
+/* =========================
+   SUBMISSIONS
+========================= */
+
+.submission-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(250px, 1fr)
+        );
+
+    gap: 20px;
+
+    margin-top: 25px;
+}
+
+.submission {
+
+    background: #222;
+
+    padding: 15px;
+
+    border-radius: 15px;
+
+    cursor: pointer;
+
+    border:
+        3px solid transparent;
+
+    transition:
+        transform 0.15s,
+        border 0.15s;
+}
+
+.submission:hover {
+
+    transform: scale(1.03);
+
+    border:
+        3px solid #ff4ecd;
+}
+
+.submission img {
+
+    width: 100%;
+
+    border-radius: 10px;
+}
+
+.submission-name {
+
+    text-align: center;
+
+    font-weight: bold;
+
+    margin-top: 10px;
+}
+
+.waiting {
+
+    text-align: center;
+
+    font-size: 22px;
+
+    padding: 30px;
+
+    color: #ddd;
+}
+
+.winner {
+
+    text-align: center;
+
+    font-size: 40px;
+
+    padding: 30px;
+}
+
+</style>
 
 </head>
 
-
 <body>
-
 
 <div class="game">
 
+<div class="logo">
+😂 MEME BATTLE 😂
+</div>
 
-    <div class="logo">
+<div class="subtitle">
+Make memes. Destroy friendships. Win glory.
+</div>
 
-        😂 MEME BATTLE 😂
+<!-- =========================
+     HOME
+========================= -->
 
-    </div>
+<div id="home" class="screen active">
 
+<h2>
+🔥 Ready to Battle?
+</h2>
 
-    <div class="subtitle">
+<button
+class="primary"
+onclick="showScreen('create')"
 
-        Make memes. Destroy friendships. Win glory.
+>
 
-    </div>
+🎮 CREATE GAME </button>
 
+<button
+class="secondary"
+onclick="showScreen('join')"
 
-    <!-- HOME -->
+>
 
-    <div
-        id="home"
-        class="screen active"
-    >
-
-        <h2>
-            🔥 Ready to Battle?
-        </h2>
-
-
-        <button
-            class="primary"
-            onclick="showScreen('create')"
-        >
-            🎮 CREATE GAME
-        </button>
-
-
-        <button
-            class="secondary"
-            onclick="showScreen('join')"
-        >
-            🚪 JOIN GAME
-        </button>
-
-    </div>
-
-
-    <!-- CREATE -->
-
-    <div
-        id="create"
-        class="screen"
-    >
-
-        <h2>
-            🎮 Create Your Game
-        </h2>
-
-
-        <input
-            id="hostName"
-            type="text"
-            placeholder="Your nickname"
-            maxlength="15"
-        >
-
-
-        <button
-            class="primary"
-            onclick="createGame()"
-        >
-            CREATE ROOM 🚀
-        </button>
-
-
-        <button
-            class="secondary"
-            onclick="showScreen('home')"
-        >
-            ← BACK
-        </button>
-
-
-        <div
-            id="createError"
-            class="error"
-        ></div>
-
-    </div>
-
-
-    <!-- JOIN -->
-
-    <div
-        id="join"
-        class="screen"
-    >
-
-        <h2>
-            🚪 Join A Game
-        </h2>
-
-
-        <input
-            id="playerName"
-            type="text"
-            placeholder="Your nickname"
-            maxlength="15"
-        >
-
-
-        <input
-            id="roomInput"
-            type="text"
-            placeholder="4-character room code"
-            maxlength="4"
-        >
-
-
-        <button
-            class="primary"
-            onclick="joinGame()"
-        >
-            JOIN BATTLE 🔥
-        </button>
-
-
-        <button
-            class="secondary"
-            onclick="showScreen('home')"
-        >
-            ← BACK
-        </button>
-
-
-        <div
-            id="joinError"
-            class="error"
-        ></div>
-
-    </div>
-
-
-    <!-- LOBBY -->
-
-    <div
-        id="lobby"
-        class="screen"
-    >
-
-        <h2>
-            🔥 GAME LOBBY
-        </h2>
-
-
-        <div
-            style="text-align:center"
-        >
-            Room Code:
-        </div>
-
-
-        <div
-            class="room-code"
-            id="roomCode"
-        >
-            ----
-        </div>
-
-
-        <div class="note">
-
-            Give this code to your friends!
-
-        </div>
-
-
-        <div class="players">
-
-            <h3>
-                👥 Players
-            </h3>
-
-
-            <div id="playerList">
-
-                Loading players...
-
-            </div>
-
-
-            <div
-                class="player-count"
-                id="playerCount"
-            >
-                0 / 10 players
-            </div>
-
-        </div>
-
-
-        <button
-            id="startButton"
-            class="green"
-            onclick="startGame()"
-        >
-            START GAME 🚀
-        </button>
-
-
-        <div class="note">
-
-            The host controls when the game starts.
-
-        </div>
-
-
-        <div
-            id="lobbyError"
-            class="error"
-        ></div>
-
-    </div>
-
+🚪 JOIN GAME </button>
 
 </div>
 
+<!-- =========================
+     CREATE
+========================= -->
+
+<div id="create" class="screen">
+
+<h2>
+🎮 Create Your Game
+</h2>
+
+<input
+id="hostName"
+type="text"
+placeholder="Your nickname"
+maxlength="15"
+
+>
+
+<button
+class="primary"
+onclick="createGame()"
+
+>
+
+CREATE ROOM 🚀 </button>
+
+<button
+class="secondary"
+onclick="showScreen('home')"
+
+>
+
+← BACK </button>
+
+<div
+    id="createError"
+    class="error"
+></div>
+
+</div>
+
+<!-- =========================
+     JOIN
+========================= -->
+
+<div id="join" class="screen">
+
+<h2>
+🚪 Join A Game
+</h2>
+
+<input
+id="playerName"
+type="text"
+placeholder="Your nickname"
+maxlength="15"
+
+>
+
+<input
+id="roomInput"
+type="text"
+placeholder="4-character room code"
+maxlength="4"
+
+>
+
+<button
+class="primary"
+onclick="joinGame()"
+
+>
+
+JOIN BATTLE 🔥 </button>
+
+<button
+class="secondary"
+onclick="showScreen('home')"
+
+>
+
+← BACK </button>
+
+<div
+    id="joinError"
+    class="error"
+></div>
+
+</div>
+
+<!-- =========================
+     LOBBY
+========================= -->
+
+<div id="lobby" class="screen">
+
+<h2>
+🔥 GAME LOBBY
+</h2>
+
+<div style="text-align:center">
+Room Code:
+</div>
+
+<div
+    class="room-code"
+    id="roomCode"
+>
+----
+</div>
+
+<div class="note">
+Give this code to your friends!
+</div>
+
+<div class="players">
+
+<h3>
+👥 Players
+</h3>
+
+<div id="playerList">
+Loading players...
+</div>
+
+<div
+    class="player-count"
+    id="playerCount"
+>
+0 / 10 players
+</div>
+
+</div>
+
+<button
+id="startButton"
+class="green"
+onclick="startGame()"
+
+>
+
+START GAME 🚀 </button>
+
+<div class="note">
+The host controls when the game starts.
+</div>
+
+<div
+    id="lobbyError"
+    class="error"
+></div>
+
+</div>
+
+<!-- =========================
+     MEME CREATION
+========================= -->
+
+<div id="gameScreen" class="screen">
+
+<div class="game-info">
+
+<div>
+ROUND <span id="roundNumber">1</span>
+</div>
+
+<div class="timer">
+⏱️ <span id="timer">60</span>
+</div>
+
+</div>
+
+<h2>
+😂 MAKE YOUR MEME
+</h2>
+
+<div class="meme-editor">
+
+<img
+id="memeImage"
+src=""
+alt="Meme"
+
+>
+
+<div
+    id="captionPreview"
+    class="caption-preview"
+>
+YOUR CAPTION
+</div>
+
+</div>
+
+<input
+id="captionInput"
+type="text"
+maxlength="100"
+placeholder="Write your funniest caption..."
+oninput="updateCaption()"
+
+>
+
+<button
+id="submitButton"
+class="green"
+onclick="submitMeme()"
+
+>
+
+🚀 SUBMIT MEME </button>
+
+<div
+    id="submissionStatus"
+    class="waiting"
+>
+Waiting for submissions...
+</div>
+
+</div>
+
+<!-- =========================
+     VOTING
+========================= -->
+
+<div id="votingScreen" class="screen">
+
+<h2>
+🗳️ VOTE FOR YOUR FAVORITE
+</h2>
+
+<div class="note">
+Click the meme you think is funniest!
+</div>
+
+<div
+    id="submissionGrid"
+    class="submission-grid"
+>
+</div>
+
+</div>
+
+<!-- =========================
+     WINNER
+========================= -->
+
+<div id="winnerScreen" class="screen">
+
+<h2>
+🏆 ROUND WINNER
+</h2>
+
+<div
+    id="winnerDisplay"
+    class="winner"
+>
+</div>
+
+<button
+id="nextRoundButton"
+class="green"
+onclick="nextRound()"
+
+>
+
+NEXT ROUND 🚀 </button>
+
+</div>
+
+</div>
 
 <script>
 
@@ -519,14 +787,11 @@ SUPABASE CONNECTION
 ==================================================
 */
 
-
 const SUPABASE_URL =
     "https://cskoszzabrdvjtkkgnxo.supabase.co";
 
-
 const SUPABASE_KEY =
     "sb_publishable_6haUbollGSbKr2rxs_bFQQ_APQyasXl";
-
 
 const supabaseClient =
     window.supabase.createClient(
@@ -541,7 +806,6 @@ GAME VARIABLES
 ==================================================
 */
 
-
 let currentRoom = null;
 
 let currentPlayer = null;
@@ -550,13 +814,74 @@ let isHost = false;
 
 let realtimeChannel = null;
 
+let currentMeme = null;
+
+let submitted = false;
+
+let timerInterval = null;
+
+let timeLeft = 60;
+
+let currentRound = 1;
+
+
+/*
+==================================================
+MEME LIBRARY
+==================================================
+
+These are temporary test images.
+
+We can replace these with your own
+meme images later.
+*/
+
+const memes = [
+
+    {
+        id: 1,
+        image:
+        "https://i.imgflip.com/30b1gx.jpg"
+    },
+
+    {
+        id: 2,
+        image:
+        "https://i.imgflip.com/1bij.jpg"
+    },
+
+    {
+        id: 3,
+        image:
+        "https://i.imgflip.com/1ihzfe.jpg"
+    },
+
+    {
+        id: 4,
+        image:
+        "https://i.imgflip.com/1tl71a.jpg"
+    },
+
+    {
+        id: 5,
+        image:
+        "https://i.imgflip.com/1ur9b0.jpg"
+    },
+
+    {
+        id: 6,
+        image:
+        "https://i.imgflip.com/22bdq6.jpg"
+    }
+
+];
+
 
 /*
 ==================================================
 SCREEN MANAGEMENT
 ==================================================
 */
-
 
 function showScreen(screenId) {
 
@@ -567,7 +892,6 @@ function showScreen(screenId) {
             screen.classList.remove("active");
 
         });
-
 
     document
         .getElementById(screenId)
@@ -582,14 +906,12 @@ ROOM CODE
 ==================================================
 */
 
-
 function generateRoomCode() {
 
     const characters =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     let code = "";
-
 
     for (
         let i = 0;
@@ -607,7 +929,6 @@ function generateRoomCode() {
 
     }
 
-
     return code;
 
 }
@@ -619,7 +940,6 @@ CREATE GAME
 ==================================================
 */
 
-
 async function createGame() {
 
     const name =
@@ -627,7 +947,6 @@ async function createGame() {
             .getElementById("hostName")
             .value
             .trim();
-
 
     if (!name) {
 
@@ -640,9 +959,7 @@ async function createGame() {
 
     }
 
-
     hideError("createError");
-
 
     let roomCode;
 
@@ -651,10 +968,6 @@ async function createGame() {
     let attempts = 0;
 
 
-    /*
-    Generate a unique room code.
-    */
-
     while (
         !room &&
         attempts < 10
@@ -662,7 +975,6 @@ async function createGame() {
 
         roomCode =
             generateRoomCode();
-
 
         const result =
             await supabaseClient
@@ -686,15 +998,12 @@ async function createGame() {
                 .single();
 
 
-        if (
-            !result.error
-        ) {
+        if (!result.error) {
 
             room =
                 result.data;
 
         }
-
 
         attempts++;
 
@@ -717,10 +1026,6 @@ async function createGame() {
     }
 
 
-    /*
-    Create the host player.
-    */
-
     const playerResult =
         await supabaseClient
             .from("players")
@@ -740,9 +1045,7 @@ async function createGame() {
             .single();
 
 
-    if (
-        playerResult.error
-    ) {
+    if (playerResult.error) {
 
         showError(
             "createError",
@@ -767,22 +1070,19 @@ async function createGame() {
     isHost = true;
 
 
-    /*
-    Show lobby.
-    */
-
     document
         .getElementById("roomCode")
         .textContent =
             room.code;
 
 
+    document
+        .getElementById("startButton")
+        .style.display =
+            "block";
+
+
     showScreen("lobby");
-
-
-    /*
-    Start listening for players.
-    */
 
     setupRealtime();
 
@@ -797,7 +1097,6 @@ JOIN GAME
 ==================================================
 */
 
-
 async function joinGame() {
 
     const name =
@@ -805,7 +1104,6 @@ async function joinGame() {
             .getElementById("playerName")
             .value
             .trim();
-
 
     const code =
         document
@@ -844,10 +1142,6 @@ async function joinGame() {
     hideError("joinError");
 
 
-    /*
-    Find room.
-    */
-
     const roomResult =
         await supabaseClient
             .from("rooms")
@@ -859,9 +1153,7 @@ async function joinGame() {
             .maybeSingle();
 
 
-    if (
-        roomResult.error
-    ) {
+    if (roomResult.error) {
 
         console.error(
             roomResult.error
@@ -877,9 +1169,7 @@ async function joinGame() {
     }
 
 
-    if (
-        !roomResult.data
-    ) {
+    if (!roomResult.data) {
 
         showError(
             "joinError",
@@ -908,10 +1198,6 @@ async function joinGame() {
 
     }
 
-
-    /*
-    Check player count.
-    */
 
     const countResult =
         await supabaseClient
@@ -944,10 +1230,6 @@ async function joinGame() {
     }
 
 
-    /*
-    Add player.
-    */
-
     const playerResult =
         await supabaseClient
             .from("players")
@@ -967,9 +1249,7 @@ async function joinGame() {
             .single();
 
 
-    if (
-        playerResult.error
-    ) {
+    if (playerResult.error) {
 
         console.error(
             playerResult.error
@@ -1000,10 +1280,6 @@ async function joinGame() {
             room.code;
 
 
-    /*
-    Hide start button for non-hosts.
-    */
-
     document
         .getElementById("startButton")
         .style.display =
@@ -1011,7 +1287,6 @@ async function joinGame() {
 
 
     showScreen("lobby");
-
 
     setupRealtime();
 
@@ -1025,7 +1300,6 @@ async function joinGame() {
 LOAD PLAYERS
 ==================================================
 */
-
 
 async function loadPlayers() {
 
@@ -1050,9 +1324,7 @@ async function loadPlayers() {
             );
 
 
-    if (
-        result.error
-    ) {
+    if (result.error) {
 
         console.error(
             result.error
@@ -1084,7 +1356,6 @@ async function loadPlayers() {
                     "div"
                 );
 
-
             div.className =
                 "player";
 
@@ -1092,10 +1363,7 @@ async function loadPlayers() {
             let hostText =
                 "";
 
-
-            if (
-                player.is_host
-            ) {
+            if (player.is_host) {
 
                 hostText =
                     " 👑 HOST";
@@ -1121,7 +1389,9 @@ async function loadPlayers() {
         .getElementById("playerCount")
         .textContent =
             players.length +
-            " / 10 players";
+            " / " +
+            currentRoom.max_players +
+            " players";
 
 }
 
@@ -1132,12 +1402,9 @@ REALTIME
 ==================================================
 */
 
-
 function setupRealtime() {
 
-    if (
-        realtimeChannel
-    ) {
+    if (realtimeChannel) {
 
         supabaseClient
             .removeChannel(
@@ -1156,8 +1423,11 @@ function setupRealtime() {
 
 
     realtimeChannel
+
         .on(
+
             "postgres_changes",
+
             {
                 event: "*",
                 schema: "public",
@@ -1166,6 +1436,7 @@ function setupRealtime() {
                     "room_id=eq." +
                     currentRoom.id
             },
+
             payload => {
 
                 console.log(
@@ -1173,13 +1444,19 @@ function setupRealtime() {
                     payload
                 );
 
-
                 loadPlayers();
 
+                checkSubmissionCount();
+
             }
+
         )
+
+
         .on(
+
             "postgres_changes",
+
             {
                 event: "UPDATE",
                 schema: "public",
@@ -1188,6 +1465,7 @@ function setupRealtime() {
                     "id=eq." +
                     currentRoom.id
             },
+
             payload => {
 
                 console.log(
@@ -1201,15 +1479,44 @@ function setupRealtime() {
                     "playing"
                 ) {
 
-                    alert(
-                        "🔥 THE GAME IS STARTING!"
-                    );
+                    startMemeRound();
 
                 }
 
             }
+
         )
+
+
+        .on(
+
+            "postgres_changes",
+
+            {
+                event: "*",
+                schema: "public",
+                table: "submissions",
+                filter:
+                    "room_id=eq." +
+                    currentRoom.id
+            },
+
+            payload => {
+
+                console.log(
+                    "Submission update:",
+                    payload
+                );
+
+                checkSubmissionCount();
+
+            }
+
+        )
+
+
         .subscribe(
+
             status => {
 
                 console.log(
@@ -1218,6 +1525,7 @@ function setupRealtime() {
                 );
 
             }
+
         );
 
 }
@@ -1229,21 +1537,27 @@ START GAME
 ==================================================
 */
 
-
 async function startGame() {
 
     if (!isHost) {
-
         return;
-
     }
-
 
     if (!currentRoom) {
-
         return;
-
     }
+
+
+    currentRound = 1;
+
+
+    const meme =
+        memes[
+            Math.floor(
+                Math.random() *
+                memes.length
+            )
+        ];
 
 
     const result =
@@ -1252,7 +1566,13 @@ async function startGame() {
             .update({
 
                 status:
-                    "playing"
+                    "playing",
+
+                current_meme_id:
+                    meme.id,
+
+                round:
+                    currentRound
 
             })
             .eq(
@@ -1261,9 +1581,7 @@ async function startGame() {
             );
 
 
-    if (
-        result.error
-    ) {
+    if (result.error) {
 
         console.error(
             result.error
@@ -1279,9 +1597,649 @@ async function startGame() {
     }
 
 
-    alert(
-        "🔥 GAME STARTED! Next we'll build the meme creation screen."
+    currentMeme =
+        meme;
+
+    startMemeRound();
+
+}
+
+
+/*
+==================================================
+START MEME ROUND
+==================================================
+*/
+
+function startMemeRound() {
+
+    if (!currentRoom) {
+        return;
+    }
+
+
+    const memeId =
+        currentRoom.current_meme_id;
+
+
+    if (memeId) {
+
+        currentMeme =
+            memes.find(
+                meme =>
+                    meme.id ==
+                    memeId
+            );
+
+    }
+
+
+    if (!currentMeme) {
+
+        currentMeme =
+            memes[
+                Math.floor(
+                    Math.random() *
+                    memes.length
+                )
+            ];
+
+    }
+
+
+    submitted = false;
+
+
+    document
+        .getElementById("roundNumber")
+        .textContent =
+            currentRound;
+
+
+    document
+        .getElementById("memeImage")
+        .src =
+            currentMeme.image;
+
+
+    document
+        .getElementById("captionInput")
+        .value =
+            "";
+
+
+    document
+        .getElementById("captionPreview")
+        .textContent =
+            "YOUR CAPTION";
+
+
+    document
+        .getElementById("submitButton")
+        .disabled =
+            false;
+
+
+    document
+        .getElementById("submissionStatus")
+        .textContent =
+            "Waiting for submissions...";
+
+
+    showScreen("gameScreen");
+
+
+    startTimer();
+
+}
+
+
+/*
+==================================================
+CAPTION PREVIEW
+==================================================
+*/
+
+function updateCaption() {
+
+    const input =
+        document.getElementById(
+            "captionInput"
+        );
+
+    const preview =
+        document.getElementById(
+            "captionPreview"
+        );
+
+
+    const text =
+        input.value.trim();
+
+
+    preview.textContent =
+        text ||
+        "YOUR CAPTION";
+
+}
+
+
+/*
+==================================================
+TIMER
+==================================================
+*/
+
+function startTimer() {
+
+    clearInterval(
+        timerInterval
     );
+
+
+    timeLeft = 60;
+
+
+    document
+        .getElementById("timer")
+        .textContent =
+            timeLeft;
+
+
+    timerInterval =
+        setInterval(
+            async () => {
+
+                timeLeft--;
+
+
+                document
+                    .getElementById("timer")
+                    .textContent =
+                        timeLeft;
+
+
+                if (
+                    timeLeft <= 0
+                ) {
+
+                    clearInterval(
+                        timerInterval
+                    );
+
+
+                    if (!submitted) {
+
+                        await submitMeme(
+                            true
+                        );
+
+                    }
+
+                }
+
+            },
+            1000
+        );
+
+}
+
+
+/*
+==================================================
+SUBMIT MEME
+==================================================
+*/
+
+async function submitMeme(
+    automatic = false
+) {
+
+    if (submitted) {
+        return;
+    }
+
+
+    const caption =
+        document
+            .getElementById(
+                "captionInput"
+            )
+            .value
+            .trim();
+
+
+    if (
+        !caption &&
+        !automatic
+    ) {
+
+        alert(
+            "Write a caption first!"
+        );
+
+        return;
+
+    }
+
+
+    const finalCaption =
+        caption ||
+        "😂";
+
+
+    submitted = true;
+
+
+    document
+        .getElementById(
+            "submitButton"
+        )
+        .disabled =
+            true;
+
+
+    clearInterval(
+        timerInterval
+    );
+
+
+    const result =
+        await supabaseClient
+            .from("submissions")
+            .insert({
+
+                room_id:
+                    currentRoom.id,
+
+                player_id:
+                    currentPlayer.id,
+
+                meme_id:
+                    currentMeme.id,
+
+                caption:
+                    finalCaption,
+
+                round:
+                    currentRound
+
+            });
+
+
+    if (result.error) {
+
+        console.error(
+            result.error
+        );
+
+        alert(
+            "Couldn't submit your meme. Check Supabase."
+        );
+
+        submitted = false;
+
+        document
+            .getElementById(
+                "submitButton"
+            )
+            .disabled =
+                false;
+
+        return;
+
+    }
+
+
+    document
+        .getElementById(
+            "submissionStatus"
+        )
+        .textContent =
+            "✅ Your meme has been submitted!";
+
+
+    await checkSubmissionCount();
+
+}
+
+
+/*
+==================================================
+CHECK SUBMISSIONS
+==================================================
+*/
+
+async function checkSubmissionCount() {
+
+    if (!currentRoom) {
+        return;
+    }
+
+
+    const playersResult =
+        await supabaseClient
+            .from("players")
+            .select("id")
+            .eq(
+                "room_id",
+                currentRoom.id
+            );
+
+
+    const submissionsResult =
+        await supabaseClient
+            .from("submissions")
+            .select("id")
+            .eq(
+                "room_id",
+                currentRoom.id
+            )
+            .eq(
+                "round",
+                currentRound
+            );
+
+
+    if (
+        playersResult.error ||
+        submissionsResult.error
+    ) {
+
+        return;
+
+    }
+
+
+    const playerCount =
+        playersResult.data.length;
+
+
+    const submissionCount =
+        submissionsResult.data.length;
+
+
+    if (
+        document.getElementById(
+            "gameScreen"
+        ).classList.contains(
+            "active"
+        )
+    ) {
+
+        document
+            .getElementById(
+                "submissionStatus"
+            )
+            .textContent =
+                submissionCount +
+                " / " +
+                playerCount +
+                " players submitted";
+
+    }
+
+
+    if (
+        submissionCount >=
+        playerCount &&
+        playerCount > 0
+    ) {
+
+        showVoting();
+
+    }
+
+}
+
+
+/*
+==================================================
+VOTING
+==================================================
+*/
+
+async function showVoting() {
+
+    clearInterval(
+        timerInterval
+    );
+
+
+    const result =
+        await supabaseClient
+            .from("submissions")
+            .select(
+                "id, caption, player_id"
+            )
+            .eq(
+                "room_id",
+                currentRoom.id
+            )
+            .eq(
+                "round",
+                currentRound
+            );
+
+
+    if (result.error) {
+
+        console.error(
+            result.error
+        );
+
+        return;
+
+    }
+
+
+    const grid =
+        document.getElementById(
+            "submissionGrid"
+        );
+
+
+    grid.innerHTML = "";
+
+
+    for (
+        const submission
+        of result.data
+    ) {
+
+        const card =
+            document.createElement(
+                "div"
+            );
+
+
+        card.className =
+            "submission";
+
+
+        card.onclick =
+            () =>
+                voteFor(
+                    submission.id
+                );
+
+
+        const image =
+            document.createElement(
+                "img"
+            );
+
+
+        image.src =
+            currentMeme.image;
+
+
+        const name =
+            document.createElement(
+                "div"
+            );
+
+
+        name.className =
+            "submission-name";
+
+
+        name.textContent =
+            submission.caption;
+
+
+        card.appendChild(
+            image
+        );
+
+
+        card.appendChild(
+            name
+        );
+
+
+        grid.appendChild(
+            card
+        );
+
+    }
+
+
+    showScreen(
+        "votingScreen"
+    );
+
+}
+
+
+/*
+==================================================
+VOTE
+==================================================
+*/
+
+async function voteFor(
+    submissionId
+) {
+
+    if (
+        submissionId ===
+        currentPlayer.id
+    ) {
+        return;
+    }
+
+
+    const result =
+        await supabaseClient
+            .from("votes")
+            .insert({
+
+                room_id:
+                    currentRoom.id,
+
+                submission_id:
+                    submissionId,
+
+                voter_id:
+                    currentPlayer.id,
+
+                round:
+                    currentRound
+
+            });
+
+
+    if (result.error) {
+
+        console.error(
+            result.error
+        );
+
+        alert(
+            "You already voted or there was an error."
+        );
+
+        return;
+
+    }
+
+
+    alert(
+        "🗳️ Vote submitted!"
+    );
+
+}
+
+
+/*
+==================================================
+NEXT ROUND
+==================================================
+*/
+
+async function nextRound() {
+
+    if (!isHost) {
+
+        alert(
+            "Waiting for the host to start the next round."
+        );
+
+        return;
+
+    }
+
+
+    currentRound++;
+
+
+    const meme =
+        memes[
+            Math.floor(
+                Math.random() *
+                memes.length
+            )
+        ];
+
+
+    currentMeme =
+        meme;
+
+
+    const result =
+        await supabaseClient
+            .from("rooms")
+            .update({
+
+                status:
+                    "playing",
+
+                current_meme_id:
+                    meme.id,
+
+                round:
+                    currentRound
+
+            })
+            .eq(
+                "id",
+                currentRoom.id
+            );
+
+
+    if (result.error) {
+
+        console.error(
+            result.error
+        );
+
+        return;
+
+    }
+
+
+    startMemeRound();
 
 }
 
@@ -1291,7 +2249,6 @@ async function startGame() {
 ERROR HELPERS
 ==================================================
 */
-
 
 function showError(
     elementId,
@@ -1329,10 +2286,9 @@ function hideError(
 
 }
 
-
 </script>
-
 
 </body>
 
 </html>
+
